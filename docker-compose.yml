@@ -1,0 +1,34 @@
+version: '3.2'
+
+services:
+  baza-danych:
+    build:
+      ./baza-danych
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - network_main
+  serwer-www:
+    build:
+      ./serwer-www
+    volumes:
+      - ./nginx-logs:/var/log/nginx
+    ports:
+      - "8090:80"
+    restart: always
+    networks:
+      - network_main
+  aplikacja:
+    depends_on:
+      - baza-danych
+    build:
+      ./aplikacja
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - network_main
+networks:
+  network_main:
+    driver: bridge
